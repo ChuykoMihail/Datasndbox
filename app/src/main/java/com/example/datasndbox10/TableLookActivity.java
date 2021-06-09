@@ -35,7 +35,7 @@ public class TableLookActivity extends AppCompatActivity {
     EditText dataChangeEditText;
     ArrayList<String> data1;
 
-    ArrayList<TableField> tableFieldArrayList = new ArrayList<TableField>();
+    static public ArrayList<TableField> tableFieldArrayList = new ArrayList<TableField>();
 
 
 
@@ -110,9 +110,8 @@ public class TableLookActivity extends AppCompatActivity {
         insertRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (TableField i : tableFieldArrayList){
-
-                }
+                Intent intent = new Intent(TableLookActivity.this, InsertRowActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -138,4 +137,10 @@ public class TableLookActivity extends AppCompatActivity {
         selectedTable.setNumColumns(3);
 
     }*/
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        tableFieldArrayList.clear();
+    }
 }

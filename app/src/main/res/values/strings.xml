@@ -2,6 +2,7 @@
     <string name="app_name">Datasndbox 1.0</string>
     <string name="add_field">Добавить колонну</string>
     <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
     <string-array name="types_of_data">
         <item>Integer</item>
         <item>String</item>
