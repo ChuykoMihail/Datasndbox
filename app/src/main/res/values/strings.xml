@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Datasndbox 1.0</string>
+    <string name="add_field">Добавить колонну</string>
+    <string name="save">Сохранить</string>
+    <string-array name="types_of_data">
+        <item>Integer</item>
+        <item>String</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
