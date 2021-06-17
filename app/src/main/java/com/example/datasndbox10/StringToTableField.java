@@ -14,31 +14,27 @@ public class StringToTableField {
         int sum = 0;
         ArrayList<String> collumnsStrings = new ArrayList<String>();
 
-        ArrayList<String> fieldsINT = new ArrayList<String>();
-        ArrayList<String> fieldsTEXT = new ArrayList<String>();
-        ArrayList<String> fieldsPK = new ArrayList<String>();
-        ArrayList<String> fieldsFK = new ArrayList<String>();
-        ArrayList<String> fieldsNN = new ArrayList<String>();
-        String buffer;
-        int helpIndex = 0;
-        int helpIndexEnd = 0;
-        int amountInt = 0;
-        int amountText = 0;
-        int amountFK = 0;
-        int amountPK = 0;
-        int amountNN = 0;
+
         //Ищем text
 
         Pattern pattern = Pattern.compile("\\(.+\\)");
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             String columns = input.subSequence(matcher.start() + 1, matcher.end()).toString();
+
             pattern = Pattern.compile("(.+?,|.+\\))");
             matcher = pattern.matcher(columns);
+
             while (matcher.find()) {
-                collumnsStrings.add(columns.substring(matcher.start(), matcher.end() - 1));
+                if(columns.charAt(matcher.start())  == ' ') collumnsStrings.add(columns.substring(matcher.start()+1, matcher.end() - 1));
+                else collumnsStrings.add(columns.substring(matcher.start(), matcher.end() - 1));
+            }
+            String delete = collumnsStrings.get(collumnsStrings.size()-1).substring(0,11);
+            if(delete.equals("FOREIGN KEY")){
+                collumnsStrings.remove(collumnsStrings.size()-1);
             }
             for (String i : collumnsStrings) {
+                //если constraint - брейкаем
                 TableField tempField = new TableField("", "", false, false, false);
                 pattern = Pattern.compile(".+?\\s|.+\\z");
                 matcher = pattern.matcher(i);

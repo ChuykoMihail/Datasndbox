@@ -1,6 +1,9 @@
 package com.example.datasndbox10;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -11,20 +14,27 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.datasndbox10.ForeignKeyActivity.ForeignKeyActivity;
+
 import java.util.List;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
 import static java.security.AccessController.getContext;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder>{
 
+    public static String FKname="";
+
     private final LayoutInflater inflater;
     protected final List<TableField> fields;
-    private Context context;
+    public Context context;
 
     RecyclerAdapter(Context context, List<TableField> _fields) {
         this.fields = _fields;
@@ -102,6 +112,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
                     state.setCheckBox3Resource(true);
+                    FKname = state.getFlagResource();
+
                 } else {
                     state.setCheckBox3Resource(false);
                 }
@@ -132,9 +144,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     public static class toSQLEditColumns{
-        private String SQL;
         public static int columnsNum;
-        private static String PK;
+        private Context context;
 
         public static String generateField(TableField myField){
             String SQLfield="";
@@ -143,19 +154,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 if (myField.getType().equals("Integer")) SQLfield+="INTEGER";
                 else SQLfield+="TEXT";
                 if (myField.getCheckBox1Resource()) SQLfield+=" NOT NULL";
-                if (myField.getCheckBox2Resource()&&PK!="") PK = myField.getFlagResource();
+                if (myField.getCheckBox2Resource()) SQLfield+= " PRIMARY KEY";
+                if (myField.getCheckBox3Resource()) {
+                    FKname = myField.getFlagResource();
+                }
             }
             return SQLfield;
         }
 
-        public static String generateSQL(List<TableField> _fields){
+        public static String generateSQL(List<TableField> _fields, Context context){
             columnsNum = _fields.size();
             String finalSQL="";
             for (int i=0; i<columnsNum-1;i++)   {
                 finalSQL+=generateField(_fields.get(i))+", ";
             }
             finalSQL+=generateField(_fields.get(columnsNum-1));
-
             return finalSQL;
         }
     }

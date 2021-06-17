@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Datasndbox10">
-        <activity android:name=".InsertRowActivity"></activity>
+        <activity android:name=".ForeignKeyActivity.ForeignKeyActivity"></activity>
+        <activity android:name=".InsertRowActivity" />
         <activity android:name=".EditTableActivity" />
         <activity android:name=".TableLookActivity" />
         <activity android:name=".EditDataActivity" />

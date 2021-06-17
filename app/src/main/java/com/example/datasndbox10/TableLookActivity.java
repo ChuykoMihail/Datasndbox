@@ -25,10 +25,9 @@ import static java.lang.String.valueOf;
 
 public class TableLookActivity extends AppCompatActivity {
 
-
-    String tableName;
+    public static int numOfColumn;
+    public static String tableName;
     GridView selectedTable;
-    Button addColumnButton;
     Button insertRow;
     ArrayList<String> data = new ArrayList<String>();
     ArrayAdapter<String> adapter;
@@ -36,7 +35,8 @@ public class TableLookActivity extends AppCompatActivity {
     ArrayList<String> data1;
 
     static public ArrayList<TableField> tableFieldArrayList = new ArrayList<TableField>();
-
+    String createStatement;
+    StringToTableField conv = new StringToTableField();
 
 
     @Override
@@ -50,16 +50,15 @@ public class TableLookActivity extends AppCompatActivity {
 
         //Находим элементы интерфейса
         selectedTable = findViewById(R.id.some_table);
-        addColumnButton = findViewById(R.id.add_column_button);
         insertRow = findViewById(R.id.add_row_button);
 
 
 
         Cursor infoQuerry = MainActivity.db.rawQuery("SELECT sql FROM sqlite_master WHERE tbl_name = '"+tableName+"';",null);
         infoQuerry.moveToFirst();
-        String createStatement = infoQuerry.getString(0);
+        createStatement = infoQuerry.getString(0);
 
-        StringToTableField conv = new StringToTableField();
+
         conv.convertToField(createStatement,tableFieldArrayList);
         //получаем данные таблицы
         for(TableField i:tableFieldArrayList){
@@ -72,16 +71,15 @@ public class TableLookActivity extends AppCompatActivity {
                 for (TableField i:tableFieldArrayList){
                     String someStringData;
                     int somneIntData=0;
-                    if(i.getType()=="TEXT") someStringData = query.getString(query.getColumnIndex(i.getFlagResource()));
+                    if(i.getType().equals("TEXT")) someStringData = query.getString(query.getColumnIndex(i.getFlagResource()));
 
                     else {
                         somneIntData = query.getInt(query.getColumnIndex(i.getFlagResource()));
                         someStringData = valueOf(somneIntData);
                     }
                     data.add(someStringData);
-                    query.moveToNext();
-
                 }
+                query.moveToNext();
             }
         }
 
@@ -122,14 +120,6 @@ public class TableLookActivity extends AppCompatActivity {
         });
 
 
-        addColumnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent  intent = new Intent(TableLookActivity.this, EditColumnActivity.class);
-                startActivity(intent);
-                //передаём NULL
-            }
-        });
     }
     /*private void adjustGridView(){
         selectedTable.setVerticalSpacing(5);
@@ -141,6 +131,13 @@ public class TableLookActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        numOfColumn = tableFieldArrayList.size();
         tableFieldArrayList.clear();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (tableFieldArrayList.size()==0)  conv.convertToField(createStatement,tableFieldArrayList);
     }
 }

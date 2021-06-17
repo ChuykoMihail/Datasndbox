@@ -12,12 +12,6 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/add_column_button"
-            android:text="Новая колонна"
-            android:layout_weight="1"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/add_row_button"
             android:text="Новая строка"
             android:layout_weight="1"/>

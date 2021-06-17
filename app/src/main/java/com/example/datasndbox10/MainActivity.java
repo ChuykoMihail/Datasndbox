@@ -1,7 +1,9 @@
 package com.example.datasndbox10;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         tablesNames = new ArrayList<String>();
         db = getBaseContext().openOrCreateDatabase("datasandbox.db", MODE_PRIVATE, null);
+        db.setForeignKeyConstraintsEnabled(true);
 
 
 
@@ -52,6 +56,39 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, TableLookActivity.class);
                 intent.putExtra("tableName", tablesNames.get(position));
                 startActivity(intent);
+            }
+        });
+        table_list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Удалить выбранную таблицу?")
+                        .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                db.execSQL("DROP TABLE IF EXISTS "+tablesNames.get(position));
+                                tablesNames.clear();
+                                tablesNames.add("пустышка");
+                                Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+
+                                if (c.moveToFirst()) {
+                                    while (!c.isAfterLast()) {
+                                        tablesNames.add(c.getString(c.getColumnIndex("name")));
+                                        c.moveToNext();
+                                    }
+                                }
+                                adapter.notifyDataSetChanged();
+
+                            }
+                        }).setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(MainActivity.this,"Думай лучше", Toast.LENGTH_LONG);
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return true;
             }
         });
 
