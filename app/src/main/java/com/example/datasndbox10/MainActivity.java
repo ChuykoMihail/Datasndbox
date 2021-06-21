@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         db = getBaseContext().openOrCreateDatabase("datasandbox.db", MODE_PRIVATE, null);
         db.setForeignKeyConstraintsEnabled(true);
 
-
+//учимся работать с гитом
 
 
         // получаем элемент ListView
